@@ -1,0 +1,15 @@
+.scrollbar::-webkit-scrollbar{
+    background-color: transparent;
+  }
+  .ant-select-selector {
+    background-color: rgba(49, 83, 67, 0.1) !important;
+    height: 50px !important;
+    padding-top: 3rem;
+  }
+  .ant-select-selection-item{
+    padding-top: 0.5rem !important;
+    padding-left: 1.2rem !important;
+    font-size: large;
+    font:bold !important;
+    font-weight: 400 !important;
+  }
