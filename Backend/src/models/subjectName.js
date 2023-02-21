@@ -13,9 +13,9 @@ class Subject {
       .add({
         DepartmentName: this.DepartmentName,
         Semester: this.Semester,
-        Semester: this.SubjectName,
+        SubjectName: this.SubjectName,
         SubjectCode: this.SubjectCode,
-      })
+      })  
       .then(() => {
         return new Promise((resolve, reject) => {
           resolve(true);

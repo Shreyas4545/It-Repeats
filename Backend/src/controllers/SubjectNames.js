@@ -3,7 +3,7 @@ import Subject from "../models/subjectName";
 
 const addSub = async (req, res) => {
   const { DepartmentName, Semester, SubjectName, SubjectCode } = req.body;
-  
+  console.log(req.body);
   if(!DepartmentName || !Semester || !SubjectName){
     return res.status(400).json({
         success: false,
@@ -52,6 +52,7 @@ const getSub = async (req, res) => {
     b.forEach((element) => {
       details.push(element.data());
     });
+    console.log(details);
     return res.status(200).json({
       message: "Success",
       success: true,

@@ -70,7 +70,7 @@ const getQuestionPaper = async (req, res) => {
   const { departmentName, subjectName, semester, year, examName } = req.query;
 
   let query = db.collection("questionPaper");
-
+  
   if (departmentName) {
     query = query.where("departmentName", "==", departmentName);
   }

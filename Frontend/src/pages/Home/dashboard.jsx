@@ -35,6 +35,7 @@ const Dashboard = () => {
     });
   };
 
+  const [depts, setDepts] = useState([]);
   const [qp, setQP] = useState([]);
   const [progress, setProgress] = useState();
   const [details, setDetails] = useState({
@@ -127,7 +128,7 @@ const Dashboard = () => {
     await axios
       .get("http://localhost:9000/api/question-paper/get-details")
       .then((res) => {
-        console.log(res.data.data);
+        // console.log(res.data.data);
         setQP(res.data.data);
         setLoading(false);
       })
@@ -156,7 +157,7 @@ const Dashboard = () => {
     await axios
       .get("http://localhost:9000/api/question-paper/get-details")
       .then((res) => {
-        console.log(res.data.data);
+        // console.log(res.data.data);
         setQP(res.data.data);
       })
       .catch((err) => {
@@ -211,6 +212,47 @@ const Dashboard = () => {
     localStorage.removeItem("uid");
     navigate(ROUTES.Home);
   };
+
+  let departments = [];
+
+  const getSubject = async () => {
+    await axios
+      .get("https://itrepeats-backend.vercel.app/api/question-paper/get-depart")
+      .then((res) => {
+        setDepts(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    try {
+      depts &&
+        depts?.map((item) => {
+          const newItem = {
+            label: item.departmentName,
+            value: item.departmentCode,
+          };
+          departments.push(newItem);
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  console.log(departments.length);
+
+  const getsemester = async () => {
+    await axios
+      .get("")
+      .then((res) => {})
+      .catch((err) => {});
+  };
+
+  useEffect(() => {
+    // getSubject();
+    if (details.depart && details.sem) {
+      getSubject();
+    }
+  }, [details.depart, details.sem]);
 
   return (
     <div>
@@ -356,7 +398,7 @@ const Dashboard = () => {
                   }}
                   className=""
                   onChange={(value) => info("depart", value)}
-                  options={Departments}
+                  options={departments}
                 />
               </div>
               <div className="">
@@ -466,7 +508,15 @@ const Dashboard = () => {
               </button>
               <br></br>
               <br></br>
-
+              {departments &&
+                departments?.map((item) => {
+                  return (
+                    <div>
+                      {item?.label}
+                      {item?.value}
+                    </div>
+                  );
+                })}
               {progress === 100 ? (
                 <Modal
                   title="Success ✅"
