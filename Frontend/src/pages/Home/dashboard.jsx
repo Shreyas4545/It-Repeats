@@ -35,7 +35,6 @@ const Dashboard = () => {
     });
   };
 
-  const [depts, setDepts] = useState([]);
   const [qp, setQP] = useState([]);
   const [progress, setProgress] = useState();
   const [details, setDetails] = useState({
@@ -157,7 +156,6 @@ const Dashboard = () => {
     await axios
       .get("http://localhost:9000/api/question-paper/get-details")
       .then((res) => {
-        // console.log(res.data.data);
         setQP(res.data.data);
       })
       .catch((err) => {
@@ -215,42 +213,71 @@ const Dashboard = () => {
 
   let departments = [];
 
-  const getSubject = async () => {
+  const [depts1, setDepts1] = useState([]);
+
+  const getDepart = async () => {
     await axios
       .get("https://itrepeats-backend.vercel.app/api/question-paper/get-depart")
       .then((res) => {
-        setDepts(res.data.data);
+        try {
+          res.data.data &&
+            res.data.data?.map((item) => {
+              const newItem = {
+                label: item.departmentName,
+                value: item.departmentName,
+              };
+              departments.push(newItem);
+            });
+          setDepts1(departments);
+        } catch (e) {
+          console.log(e);
+        }
       })
       .catch((err) => {
         console.log(err);
       });
-    try {
-      depts &&
-        depts?.map((item) => {
-          const newItem = {
-            label: item.departmentName,
-            value: item.departmentCode,
-          };
-          departments.push(newItem);
-        });
-    } catch (e) {
-      console.log(e);
-    }
   };
 
-  console.log(departments.length);
-
-  const getsemester = async () => {
+  const [courses, setCourses] = useState([]);
+  const Courses = [];
+  const [change,setChange]=useState(false);
+  const getCourses = async () => {
+    setChange(true);
+    details.course="";
     await axios
-      .get("")
-      .then((res) => {})
-      .catch((err) => {});
+      .get(
+        `http://localhost:9000/api/question-paper/get-sub?DepartmentName=${details.depart}&Semester=${details.sem}`
+      )
+      .then((res) => {
+        console.log(res.data.data);
+        try {
+          res.data.data &&
+            res.data.data?.map((item) => {
+              const newItem1 = {
+                label: item.SubjectName,
+                value: item.SubjectCode,
+              };
+              Courses.push(newItem1);
+            });
+          setCourses(Courses);
+        } catch (e) {
+          console.log(e);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+
+  console.log(courses);
 
   useEffect(() => {
-    // getSubject();
+    getDepart();
+  }, []);
+
+  useEffect(() => {
     if (details.depart && details.sem) {
-      getSubject();
+      getCourses();
     }
   }, [details.depart, details.sem]);
 
@@ -398,7 +425,7 @@ const Dashboard = () => {
                   }}
                   className=""
                   onChange={(value) => info("depart", value)}
-                  options={departments}
+                  options={depts1}
                 />
               </div>
               <div className="">
@@ -418,13 +445,13 @@ const Dashboard = () => {
                 <Select
                   name="course"
                   className="ml-5"
-                  value={details.course || "Select Course"}
+                  value={details.course || (change ? "Select Course":"Select Course")}
                   defaultValue="Select Course"
                   style={{
                     width: 215.8,
                   }}
                   onChange={(value) => info("course", value)}
-                  options={cs[details.sem - 1]}
+                  options={courses}
                 />
               </div>
               <div>
@@ -508,15 +535,7 @@ const Dashboard = () => {
               </button>
               <br></br>
               <br></br>
-              {departments &&
-                departments?.map((item) => {
-                  return (
-                    <div>
-                      {item?.label}
-                      {item?.value}
-                    </div>
-                  );
-                })}
+
               {progress === 100 ? (
                 <Modal
                   title="Success ✅"

@@ -70,7 +70,7 @@ const getQuestionPaper = async (req, res) => {
   const { departmentName, subjectName, semester, year, examName } = req.query;
 
   let query = db.collection("questionPaper");
-  
+
   if (departmentName) {
     query = query.where("departmentName", "==", departmentName);
   }
@@ -105,7 +105,7 @@ const getQuestionPaper = async (req, res) => {
       data: element.data(),
     });
   });
-
+  console.log(papers.length);
   if (papers.length === 0) {
     return res.status(501).json({
       message: "QP has not been added yet for the entered details",

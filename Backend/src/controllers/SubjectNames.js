@@ -28,6 +28,7 @@ const addSub = async (req, res) => {
 
 const getSub = async (req, res) => {
   const { DepartmentName, Semester, SubjectName, SubjectCode } = req.query;
+  console.log(DepartmentName,Semester);
   let query = db.collection("Subjects");
   if (DepartmentName) {
     query = query.where("DepartmentName", "==", DepartmentName);
@@ -52,7 +53,13 @@ const getSub = async (req, res) => {
     b.forEach((element) => {
       details.push(element.data());
     });
-    console.log(details);
+    if(details.length===0)
+    {
+      return res.status(200).json({
+        message:"No Subject Exists for the entered details",
+        success:false,
+      });
+    }
     return res.status(200).json({
       message: "Success",
       success: true,
